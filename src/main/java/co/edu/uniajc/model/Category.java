@@ -20,7 +20,4 @@ public class Category {
 
     @Column(name = "name")
     private String name;
-
-    @ManyToMany(mappedBy = "categories")
-    private List<Product> products;
 }

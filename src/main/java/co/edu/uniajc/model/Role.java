@@ -23,7 +23,4 @@ public class Role {
 
     @Column(name = "estado")
     private boolean estado;
-
-    @ManyToMany(mappedBy = "roles")
-    private List<User> users;
 }

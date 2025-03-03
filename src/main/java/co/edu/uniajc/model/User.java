@@ -44,9 +44,6 @@ public class User {
     @Column(name = "creation_date")
     private Date creationDate;
 
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
-
     @ManyToMany
     @JoinTable(
             name = "user_rol",
