@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
-@Tag(name="Order resource")
+@Tag(name="Pedidos", description = "Operaciones relacionadas con pedidos")
 public class OrderController {
     private final OrderService orderService;
 
@@ -37,10 +38,10 @@ public class OrderController {
                             @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Order.class))
                     }),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error")
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order);
+    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+        return ResponseEntity.ok(orderService.createOrder(order));
     }
 
     @GetMapping
@@ -53,11 +54,11 @@ public class OrderController {
                             @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Order.class))
                     }),
-            @ApiResponse(responseCode = "404", description = "No se encontraron pedidos"),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error")
+            @ApiResponse(responseCode = "404", description = "No se encontraron pedidos", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public List<Order> getOrders() {
-        return orderService.findAll();
+    public ResponseEntity<List<Order>> getOrders() {
+        return ResponseEntity.ok(orderService.findAll());
     }
 
     @GetMapping("/{id}")
@@ -72,10 +73,10 @@ public class OrderController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
-            @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error")
+            @ApiResponse(responseCode = "404", description = "Pedido no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public Optional<Order> getOrderById(@PathVariable Long id) {
-        return orderService.findById(id);
+    public ResponseEntity<Optional<Order>> getOrderById(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.findById(id));
     }
 }

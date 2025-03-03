@@ -18,9 +18,9 @@ public class Role {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "nombre")
-    private String nombre;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "estado")
-    private boolean estado;
+    @Column(name = "status")
+    private boolean status;
 }

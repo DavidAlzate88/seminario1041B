@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/product")
-@Tag(name="Products resource")
+@Tag(name="Productos", description = "Operaciones relacionadas con productos")
 public class ProductController {
     private final ProductService productService;
 
@@ -38,10 +38,10 @@ public class ProductController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error")
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public Product save(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public ResponseEntity<Product> save(@RequestBody Product product) {
+        return ResponseEntity.ok(productService.createProduct(product));
     }
 
     @GetMapping
@@ -56,8 +56,8 @@ public class ProductController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
-            @ApiResponse(responseCode = "404", description = "No se encontraron productos"),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error")
+            @ApiResponse(responseCode = "404", description = "No se encontraron productos", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<List<Product>> getProducts() {
         return ResponseEntity.ok(productService.findAll());
@@ -75,8 +75,8 @@ public class ProductController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error")
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<Optional<Product>> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.findById(id));

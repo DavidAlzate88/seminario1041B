@@ -1,5 +1,6 @@
 package co.edu.uniajc.controller;
 
+import co.edu.uniajc.model.Order;
 import co.edu.uniajc.model.Payment;
 import co.edu.uniajc.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,14 +10,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/payment")
-@Tag(name="Payment resource")
+@Tag(name="Pagos", description = "Operaciones relacionadas con pagos")
 public class PaymentController {
     private final PaymentService paymentService;
 
@@ -27,7 +28,7 @@ public class PaymentController {
 
     @PostMapping
     @Operation(
-            summary = "Crear un pago relacionado  un pedido ",
+            summary = "Crear un pago relacionado un pedido ",
             description = "Crea un pago y lo guarda en la base de datos")
     @ApiResponses(value = {
             @ApiResponse(
@@ -39,9 +40,26 @@ public class PaymentController {
                                     schema = @Schema(implementation = Payment.class)
                             )
                     }),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error")
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public Payment createPayment(@RequestBody Payment payment) {
-        return paymentService.createPayment(payment);
+    public ResponseEntity<Payment> createPayment(@RequestBody Payment payment) {
+        return ResponseEntity.ok(paymentService.createPayment(payment));
+    }
+
+    @GetMapping
+    @Operation(summary = "Obtener todos los pagos realizados", description = "Devuelve una lista de todos los pagos en bd")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lista de pagos encontrada",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = Payment.class))
+                    }),
+            @ApiResponse(responseCode = "404", description = "No se encontraron pagos", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<List<Payment>> getPayments() {
+        return ResponseEntity.ok(paymentService.findAll());
     }
 }

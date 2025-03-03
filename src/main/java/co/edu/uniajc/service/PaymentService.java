@@ -5,6 +5,8 @@ import co.edu.uniajc.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaymentService {
 
@@ -21,5 +23,9 @@ public class PaymentService {
         }
 
         return paymentRepository.save(payment);
+    }
+
+    public List<Payment> findAll() {
+        return paymentRepository.findAll();
     }
 }
