@@ -31,11 +31,16 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Crear un nuevo usuario", description = "Crea un nuevo usuario y lo guarda en la base de datos")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class))}),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error",
-                    content = @Content)
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Usuario creado exitosamente",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = User.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })
     public User save(@RequestBody User user) {
         return userService.save(user);
@@ -44,9 +49,15 @@ public class UserController {
     @GetMapping
     @Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario segun su email")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "usuario encontrado",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "usuario encontrado",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Product.class)
+                            )
+                    }),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
             @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })

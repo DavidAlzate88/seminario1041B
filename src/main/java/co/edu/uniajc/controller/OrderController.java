@@ -30,11 +30,14 @@ public class OrderController {
     @PostMapping
     @Operation(summary = "Crear un nuevo pedido", description = "Crea un nuevo pedido y lo guarda en la base de datos")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Pedido creado exitosamente",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Order.class))}),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error",
-                    content = @Content)
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Pedido creado exitosamente",
+                    content = {
+                            @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Order.class))
+                    }),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })
     public Order createOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
@@ -43,9 +46,13 @@ public class OrderController {
     @GetMapping
     @Operation(summary = "Obtener todos los pedidos", description = "Devuelve una lista de todos los pedidos disponibles")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de pedidos encontrada",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Order.class))}),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lista de pedidos encontrada",
+                    content = {
+                            @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Order.class))
+                    }),
             @ApiResponse(responseCode = "404", description = "No se encontraron pedidos"),
             @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })
@@ -56,9 +63,15 @@ public class OrderController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener pedido por ID", description = "Devuelve un pedido según su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedido encontrado",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Pedido encontrado",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Product.class)
+                            )
+                    }),
             @ApiResponse(responseCode = "404", description = "Pedido no encontrado"),
             @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })

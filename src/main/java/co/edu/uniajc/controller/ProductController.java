@@ -29,11 +29,16 @@ public class ProductController {
     @PostMapping
     @Operation(summary = "Crear un nuevo producto", description = "Crea un nuevo producto y lo guarda en la base de datos")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Producto creado exitosamente",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error",
-                    content = @Content)
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Producto creado exitosamente",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Product.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })
     public Product save(@RequestBody Product product) {
         return productService.createProduct(product);
@@ -42,9 +47,15 @@ public class ProductController {
     @GetMapping
     @Operation(summary = "Obtener todos los productos", description = "Devuelve una lista de todos los productos disponibles")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de productos encontrada",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lista de productos encontrada",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Product.class)
+                            )
+                    }),
             @ApiResponse(responseCode = "404", description = "No se encontraron productos"),
             @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })
@@ -55,11 +66,16 @@ public class ProductController {
     @GetMapping("/{id}")
     @Operation(summary = "Obtener producto por ID", description = "Devuelve un producto según su ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto encontrado",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Product.class))}),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado",
-                    content = @Content),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Producto encontrado",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Product.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
             @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })
     public ResponseEntity<Optional<Product>> getProductById(@PathVariable Long id) {

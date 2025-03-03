@@ -38,8 +38,7 @@ public class PaymentController {
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = Payment.class)
                             )
-                    }
-            ),
+                    }),
             @ApiResponse(responseCode = "400", description = "Internal Server Error")
     })
     public Payment createPayment(@RequestBody Payment payment) {
