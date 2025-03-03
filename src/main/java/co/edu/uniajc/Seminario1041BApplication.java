@@ -1,4 +1,4 @@
-package co.edu.uniajc.seminario1041b;
+package co.edu.uniajc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
