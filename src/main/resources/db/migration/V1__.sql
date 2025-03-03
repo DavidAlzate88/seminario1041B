@@ -74,6 +74,9 @@ CREATE TABLE users
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
 
+ALTER TABLE payment
+    ADD CONSTRAINT uc_payment_order UNIQUE (order_id);
+
 ALTER TABLE users
     ADD CONSTRAINT uc_users_email UNIQUE (email);
 

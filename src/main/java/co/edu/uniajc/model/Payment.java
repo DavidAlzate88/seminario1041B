@@ -25,6 +25,6 @@ public class Payment {
     private BigDecimal amount;
 
     @OneToOne
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "order_id")
     private Order order;
 }
