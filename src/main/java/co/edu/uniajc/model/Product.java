@@ -3,6 +3,7 @@ package co.edu.uniajc.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -26,12 +27,13 @@ public class Product {
     private String description;
 
     @Column(name = "price")
-    private int price;
+    private Double price;
 
     @Column(name = "stock")
-    private String stock;
+    private Integer stock;
 
-    @Column(name = "creation_date")
+    @CreationTimestamp
+    @Column(name = "creation_date", updatable = false)
     private Date creationDate;
 
     @ManyToMany
