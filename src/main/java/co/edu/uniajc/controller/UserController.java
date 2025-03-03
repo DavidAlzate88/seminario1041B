@@ -28,6 +28,19 @@ public class UserController {
         this.productService = productService;
     }
 
+    @PostMapping
+    @Operation(summary = "Crear un nuevo usuario", description = "Crea un nuevo usuario y lo guarda en la base de datos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error",
+                    content = @Content)
+    })
+    public User save(@RequestBody User user) {
+        return userService.save(user);
+    }
+
     @GetMapping
     @Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario segun su email")
     @ApiResponses(value = {

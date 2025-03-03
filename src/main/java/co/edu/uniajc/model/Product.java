@@ -31,8 +31,8 @@ public class Product {
     @Column(name = "stock")
     private String stock;
 
-    @Column(name = "expiration_date")
-    private Date expirationDate;
+    @Column(name = "creation_date")
+    private Date creationDate;
 
     @ManyToMany
     @JoinTable(
