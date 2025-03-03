@@ -100,9 +100,3 @@ ALTER TABLE user_rol
 
 ALTER TABLE user_rol
     ADD CONSTRAINT fk_user_rol_on_user FOREIGN KEY (user_id) REFERENCES users (id);
-
--- populate tables with Dummy data
-INSERT INTO category (name) VALUES ('Electrica');
-
-INSERT INTO role (name, status) VALUES ('Administrador', true);
-INSERT INTO role (name, status) VALUES ('Cliente', true);

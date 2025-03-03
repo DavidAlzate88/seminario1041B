@@ -3,6 +3,7 @@ package co.edu.uniajc.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;
@@ -41,7 +42,8 @@ public class User {
     @Column(name = "postal_code")
     private String postalCode;
 
-    @Column(name = "creation_date")
+    @CreationTimestamp
+    @Column(name = "creation_date", updatable = false)
     private Date creationDate;
 
     @ManyToMany
