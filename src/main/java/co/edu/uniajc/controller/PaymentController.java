@@ -1,6 +1,5 @@
 package co.edu.uniajc.controller;
 
-import co.edu.uniajc.model.Order;
 import co.edu.uniajc.model.Payment;
 import co.edu.uniajc.service.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/payment")
@@ -61,5 +61,24 @@ public class PaymentController {
     })
     public ResponseEntity<List<Payment>> getPayments() {
         return ResponseEntity.ok(paymentService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener pago por ID", description = "Devuelve un pago según su ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Pago encontrado",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Payment.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<Optional<Payment>> getOrderById(@PathVariable Long id) {
+        return ResponseEntity.ok(paymentService.findById(id));
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PaymentService {
@@ -27,5 +28,9 @@ public class PaymentService {
 
     public List<Payment> findAll() {
         return paymentRepository.findAll();
+    }
+
+    public Optional<Payment> findById(Long id) {
+        return paymentRepository.findById(id);
     }
 }
