@@ -19,14 +19,26 @@ public class ProductService {
     }
 
     public Product createProduct(Product product) {
-        return productRepository.save(product);
+        try {
+            return productRepository.save(product);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating product", e);
+        }
     }
 
     public List<Product> findAll() {
-        return productRepository.findAll();
+        try {
+            return productRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Error retrieving products", e);
+        }
     }
 
     public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
+        try {
+            return productRepository.findById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error retrieving product by ID", e);
+        }
     }
 }

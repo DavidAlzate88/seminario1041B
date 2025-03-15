@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,10 +39,14 @@ public class ProductController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<Product> save(@RequestBody Product product) {
-        return ResponseEntity.ok(productService.createProduct(product));
+        try {
+            return ResponseEntity.ok(productService.createProduct(product));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping
@@ -56,11 +61,14 @@ public class ProductController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
-            @ApiResponse(responseCode = "404", description = "No se encontraron productos", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<List<Product>> getProducts() {
-        return ResponseEntity.ok(productService.findAll());
+        try {
+            return ResponseEntity.ok(productService.findAll());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/{id}")
@@ -75,10 +83,13 @@ public class ProductController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<Optional<Product>> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.findById(id));
+        try {
+            return ResponseEntity.ok(productService.findById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Optional.empty());
+        }
     }
 }
