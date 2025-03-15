@@ -58,6 +58,7 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<List<Order>> getOrders() {
+        // todo: implement exceptions
         return ResponseEntity.ok(orderService.findAll());
     }
 
