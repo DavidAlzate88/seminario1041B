@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.3'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'co.edu.uniajc'
@@ -33,6 +34,45 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	// Junit
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+	// Mockito
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.mockito:mockito-junit-jupiter'
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+		html.required = true
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'co/edu/uniajc/model/**', // Exclude model classes
+					'co/edu/uniajc/config/**', // Exclude config classes
+					'co/edu/uniajc/Application.java', // Exclude main application class
+					'co/edu/uniajc/controller/**' // Exclude controllers class.
+			])
+		}))
+	}
+
+	finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			enabled = true
+			limit {
+				minimum = 0.80 // 80% coverage
+			}
+		}
+	}
 }
 
 tasks.named('test') {
