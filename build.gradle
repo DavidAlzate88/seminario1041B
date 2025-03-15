@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '3.4.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'jacoco'
+	id "org.sonarqube" version "6.0.1.5171"
 }
 
 group = 'co.edu.uniajc'
@@ -77,4 +78,18 @@ jacocoTestCoverageVerification {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "davidalzate88:seminario1041B your_organization_key:your_project_key" // Replace with your actual keys
+		property "sonar.organization", "davidalzate88" // Replace with your organization key
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.login", "6cb74db5bc1ca19d3bc027f8be50caa210373791" // Replace with your SonarCloud token
+		property "sonar.java.coveragePlugin", "jacoco"
+		property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/reports/jacoco/test/jacocoTestReport.xml"
+		property "sonar.sources", "src/main/java"
+		property "sonar.tests", "src/test/java"
+		property "sonar.exclusions", "**/model/**, **/config/**, **/Application.java" // Add any exclusions you need
+	}
 }
