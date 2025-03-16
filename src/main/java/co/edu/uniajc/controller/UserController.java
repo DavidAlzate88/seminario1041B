@@ -1,7 +1,6 @@
 package co.edu.uniajc.controller;
 
 import co.edu.uniajc.model.User;
-import co.edu.uniajc.service.ProductService;
 import co.edu.uniajc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,12 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name="Usuarios", description = "Operaciones relacionadas con usuarios")
 public class UserController {
     private final UserService userService;
-    private final ProductService productService;
 
     @Autowired
-    public UserController(UserService userService, ProductService productService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.productService = productService;
     }
 
     @PostMapping
@@ -38,10 +35,15 @@ public class UserController {
                                     schema = @Schema(implementation = User.class)
                             )
                     }),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<User> save(@RequestBody User user) {
-        return ResponseEntity.ok(userService.save(user));
+        try {
+            return ResponseEntity.ok(userService.save(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping
