@@ -38,10 +38,15 @@ public class OrderController {
                             @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Order.class))
                     }),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-        return ResponseEntity.ok(orderService.createOrder(order));
+        try {
+            return ResponseEntity.ok(orderService.createOrder(order));
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
     @GetMapping
@@ -55,11 +60,15 @@ public class OrderController {
                             schema = @Schema(implementation = Order.class))
                     }),
             @ApiResponse(responseCode = "404", description = "No se encontraron pedidos", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<List<Order>> getOrders() {
-        // todo: implement exceptions
-        return ResponseEntity.ok(orderService.findAll());
+        try {
+            return ResponseEntity.ok(orderService.findAll());
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
     @GetMapping("/{id}")
@@ -75,9 +84,14 @@ public class OrderController {
                             )
                     }),
             @ApiResponse(responseCode = "404", description = "Pedido no encontrado", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<Optional<Order>> getOrderById(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.findById(id));
+        try {
+            return ResponseEntity.ok(orderService.findById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError().body(Optional.empty());
+        }
     }
 }
