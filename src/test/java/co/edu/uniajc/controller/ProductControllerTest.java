@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import co.edu.uniajc.controller.ProductController;
 import co.edu.uniajc.model.Product;
 import co.edu.uniajc.service.ProductService;
 
@@ -63,6 +62,17 @@ class ProductControllerTest {
     }
 
     @Test
+    void save_shouldReturnInternalServerErrorOnException() {
+        when(productService.createProduct(product1)).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<Product> response = productController.save(product1);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(productService, times(1)).createProduct(product1);
+    }
+
+    @Test
     void getProducts_shouldReturnListOfProducts() {
         List<Product> productList = new ArrayList<>();
         productList.add(product1);
@@ -74,6 +84,17 @@ class ProductControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(productList, response.getBody());
+        verify(productService, times(1)).findAll();
+    }
+
+    @Test
+    void getProducts_shouldReturnInternalServerErrorOnException() {
+        when(productService.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<List<Product>> response = productController.getProducts();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNull(response.getBody());
         verify(productService, times(1)).findAll();
     }
 
@@ -95,6 +116,17 @@ class ProductControllerTest {
         ResponseEntity<Optional<Product>> response = productController.getProductById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(Optional.empty(), response.getBody());
+        verify(productService, times(1)).findById(1L);
+    }
+
+    @Test
+    void getProductById_shouldReturnInternalServerErrorOnException() {
+        when(productService.findById(1L)).thenThrow(new RuntimeException("Database error"));
+
+        ResponseEntity<Optional<Product>> response = productController.getProductById(1L);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals(Optional.empty(), response.getBody());
         verify(productService, times(1)).findById(1L);
     }

@@ -46,8 +46,9 @@ dependencies {
 }
 
 jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
 	reports {
-		xml.required = true
+		xml.required = false
 		html.required = true
 	}
 
@@ -83,12 +84,12 @@ sonarqube {
 	properties {
 		property "sonar.projectKey", "davidalzate88:seminario1041B" // Replace with your actual keys
 		property "sonar.organization", "davidalzate88" // Replace with your organization key
-		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.login", project.properties['sonarCloudToken'] // Replace with your SonarCloud token
+		property "sonar.host.url", "http://localhost:9000"
+		property "sonar.token", project.properties['sonarCloudToken'] // Replace with your SonarCloud token
 		property "sonar.java.coveragePlugin", "jacoco"
 		property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
-		property "sonar.exclusions", "**/model/**, **/config/**, **/Application.java" // Add any exclusions you need
+		property "sonar.exclusions", "**/model/**, **/config/**, **/Seminario1041BApplication.java" // Add any exclusions you need
 	}
 }
