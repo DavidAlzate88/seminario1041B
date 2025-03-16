@@ -31,7 +31,7 @@ public class ProductService {
         try {
             return productRepository.findAll();
         } catch (org.springframework.dao.DataAccessException e) {
-            throw new ProductException("Error retrieving products from the database", e);
+            throw new ProductException("Error retrieving products from database", e);
         } catch (Exception e) {
             throw new ProductException("Unexpected error retrieving products",e);
         }
@@ -46,7 +46,7 @@ public class ProductService {
 
             return product;
         } catch (org.springframework.dao.DataAccessException e) {
-            throw new ProductException("Error retrieving product from the database", e);
+            throw new ProductException("Error retrieving product from database", e);
         } catch (Exception e) {
             throw new ProductException("Unexpected error retrieving product with id " + id, e);
         }
