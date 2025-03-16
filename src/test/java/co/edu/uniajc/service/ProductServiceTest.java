@@ -59,6 +59,14 @@ class ProductServiceTest {
     }
 
     @Test
+    void createProduct_shouldThrowExceptionOnError() {
+        when(productRepository.save(product1)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(RuntimeException.class, () -> productService.createProduct(product1));
+        verify(productRepository, times(1)).save(product1);
+    }
+
+    @Test
     void findAll_shouldReturnListOfProducts() {
         List<Product> productList = new ArrayList<>();
         productList.add(product1);
@@ -71,6 +79,14 @@ class ProductServiceTest {
         assertEquals(2, result.size());
         assertEquals(product1, result.get(0));
         assertEquals(product2, result.get(1));
+        verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findAll_shouldThrowExceptionOnError() {
+        when(productRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(RuntimeException.class, () -> productService.findAll());
         verify(productRepository, times(1)).findAll();
     }
 
@@ -92,6 +108,14 @@ class ProductServiceTest {
         Optional<Product> result = productService.findById(1L);
 
         assertFalse(result.isPresent());
+        verify(productRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void findById_shouldThrowExceptionOnError() {
+        when(productRepository.findById(1L)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(RuntimeException.class, () -> productService.findById(1L));
         verify(productRepository, times(1)).findById(1L);
     }
 }
