@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import co.edu.uniajc.exception.ProductException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import co.edu.uniajc.model.Product;
 import co.edu.uniajc.repository.ProductRepository;
+import org.springframework.dao.DataAccessException;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -60,7 +62,7 @@ class ProductServiceTest {
 
     @Test
     void createProduct_shouldThrowExceptionOnError() {
-        when(productRepository.save(product1)).thenThrow(new RuntimeException("Database error"));
+        when(productRepository.save(product1)).thenThrow(new ProductException("Database error"));
 
         assertThrows(RuntimeException.class, () -> productService.createProduct(product1));
         verify(productRepository, times(1)).save(product1);
@@ -76,22 +78,28 @@ class ProductServiceTest {
 
         List<Product> result = productService.findAll();
 
-        assertEquals(2, result.size());
-        assertEquals(product1, result.get(0));
-        assertEquals(product2, result.get(1));
+        assertEquals(productList, result);
+        verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findAll_shouldThrowProductException_whenRepositoryThrowsException() {
+        when(productRepository.findAll()).thenThrow(new DataAccessException("Database error") {});
+
+        assertThrows(ProductException.class, () -> productService.findAll());
         verify(productRepository, times(1)).findAll();
     }
 
     @Test
     void findAll_shouldThrowExceptionOnError() {
-        when(productRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+        when(productRepository.findAll()).thenThrow(new ProductException("Internal server error"));
 
-        assertThrows(RuntimeException.class, () -> productService.findAll());
+        assertThrows(ProductException.class, () -> productService.findAll());
         verify(productRepository, times(1)).findAll();
     }
 
     @Test
-    void findById_shouldReturnProductIfExists() {
+    void findById_shouldReturnProduct_whenProductExists() {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
 
         Optional<Product> result = productService.findById(1L);
@@ -102,20 +110,18 @@ class ProductServiceTest {
     }
 
     @Test
-    void findById_shouldReturnEmptyOptionalIfProductDoesNotExist() {
+    void findById_shouldThrowProductNotFoundException_whenProductDoesNotExist() {
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
-        Optional<Product> result = productService.findById(1L);
-
-        assertFalse(result.isPresent());
+        assertThrows(ProductException.class, () -> productService.findById(1L));
         verify(productRepository, times(1)).findById(1L);
     }
 
     @Test
-    void findById_shouldThrowExceptionOnError() {
-        when(productRepository.findById(1L)).thenThrow(new RuntimeException("Database error"));
+    void findById_shouldThrowProductException_whenRepositoryThrowsException() {
+        when(productRepository.findById(1L)).thenThrow(new DataAccessException("Database error") {});
 
-        assertThrows(RuntimeException.class, () -> productService.findById(1L));
+        assertThrows(ProductException.class, () -> productService.findById(1L));
         verify(productRepository, times(1)).findById(1L);
     }
 }
