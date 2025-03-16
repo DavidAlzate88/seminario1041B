@@ -39,12 +39,13 @@ public class ProductController {
                                     schema = @Schema(implementation = Product.class)
                             )
                     }),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     public ResponseEntity<Product> save(@RequestBody Product product) {
         try {
             return ResponseEntity.ok(productService.createProduct(product));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
