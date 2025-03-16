@@ -8,6 +8,7 @@ class Seminario1041BApplicationTests {
 
 	@Test
 	void contextLoads() {
+//		This is a generated spring test file
 	}
 
 }
