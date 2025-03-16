@@ -1,10 +1,10 @@
 package co.edu.uniajc.service;
 
+import co.edu.uniajc.exception.UserException;
 import co.edu.uniajc.model.User;
 import co.edu.uniajc.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,12 +20,16 @@ public class UserService {
         try {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("El email ya está en uso");
+            throw new UserException("El email ya está en uso");
         }
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        try {
+            return userRepository.findByEmail(email).orElse(null);
+        } catch (Exception e) {
+            throw new UserException("Error retrieving user with email " + email, e);
+        }
     }
 
 }
