@@ -57,7 +57,8 @@ jacocoTestReport {
 			fileTree(dir: it, exclude: [
 					'co/edu/uniajc/model/**', // Exclude model classes
 					'co/edu/uniajc/config/**', // Exclude config classes
-					'co/edu/uniajc/Application.java', // Exclude main application class
+					'co/edu/uniajc/repository/**', // Exclude model classes
+					'co/edu/uniajc/Seminario1041BApplication.java', // Exclude main application class
 			])
 		}))
 	}
@@ -70,7 +71,7 @@ jacocoTestCoverageVerification {
 		rule {
 			enabled = true
 			limit {
-				minimum = 0.30 // 80% coverage
+				minimum = 0.80 // 80% coverage
 			}
 		}
 	}
@@ -90,6 +91,6 @@ sonarqube {
 		property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
-		property "sonar.exclusions", "**/model/**, **/config/**, **/Seminario1041BApplication.*" // Add any exclusions you need
+		property "sonar.exclusions", "**/model/**, **/config/**, **/repository/**, **/Seminario1041BApplication*" // Add any exclusions you need
 	}
 }
