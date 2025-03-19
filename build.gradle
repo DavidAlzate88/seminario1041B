@@ -47,7 +47,7 @@ dependencies {
 
 jacocoTestReport {
 	dependsOn test // tests are required to run before generating the report
-	reports {
+	reports { // generate reports on xml and html
 		xml.required = true
 		html.required = true
 	}
