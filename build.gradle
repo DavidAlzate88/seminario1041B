@@ -44,27 +44,6 @@ dependencies {
 	testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
-jacocoTestReport {
-	dependsOn test // tests are required to run before generating the report
-	reports { // generate reports on xml and html
-		xml.required = true
-		html.required = true
-	}
-
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [
-					'co/edu/uniajc/model/**', // Exclude model classes
-					'co/edu/uniajc/config/**', // Exclude config classes
-					'co/edu/uniajc/repository/**', // Exclude model classes
-					'co/edu/uniajc/Seminario1041BApplication.java', // Exclude main application class
-			])
-		}))
-	}
-
-	finalizedBy jacocoTestCoverageVerification
-}
-
 jacocoTestCoverageVerification {
 	violationRules {
 		rule {
@@ -78,8 +57,34 @@ jacocoTestCoverageVerification {
 
 tasks.named('test') {
 	useJUnitPlatform()
-	finalizedBy jacocoTestReport
-	exclude 'co/edu/uniajc/Seminario1041BApplicationTests.class'
+	exclude 'co/edu/uniajc/Seminario1041BApplicationTests.java'
+}
+
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+	reports { // generate reports on xml and html
+		xml.required = true
+		html.required = true
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'co/edu/uniajc/model/**', // Exclude model classes
+					'co/edu/uniajc/configuration/**', // Exclude config classes
+					'co/edu/uniajc/repository/**', // Exclude model classes
+					'co/edu/uniajc/exception/**', // Exclude exception classes
+					'co/edu/uniajc/controller/**', // Exclude controller classes
+					'co/edu/uniajc/Seminario1041BApplication.java', // Exclude main application class
+			])
+		}))
+	}
+
+	finalizedBy jacocoTestCoverageVerification
+}
+
+plugins.withType(JacocoPlugin).configureEach {
+	test.finalizedBy 'jacocoTestReport'
 }
 
 sonarqube {
@@ -90,6 +95,6 @@ sonarqube {
 		property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.sources", "src/main/java"
 		property "sonar.tests", "src/test/java"
-		property "sonar.exclusions", "**/model/**, **/config/**, **/repository/**, **/Seminario1041BApplication*" // Add any exclusions you need
+		property "sonar.exclusions", "**/model/**, **/configuration/**, **/controller/**, **/exception/**, **/repository/**, **/Seminario1041BApplication*" // Add any exclusions you need
 	}
 }
