@@ -57,11 +57,10 @@ jacocoTestCoverageVerification {
 
 tasks.named('test') {
 	useJUnitPlatform()
-	exclude 'co/edu/uniajc/Seminario1041BApplicationTests.java'
 }
 
 jacocoTestReport {
-	dependsOn test // tests are required to run before generating the report
+	dependsOn test
 	reports { // generate reports on xml and html
 		xml.required = true
 		html.required = true
@@ -71,7 +70,6 @@ jacocoTestReport {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
 					'co/edu/uniajc/model/**', // Exclude model classes
-					'co/edu/uniajc/configuration/**', // Exclude config classes
 					'co/edu/uniajc/repository/**', // Exclude model classes
 					'co/edu/uniajc/exception/**', // Exclude exception classes
 					'co/edu/uniajc/controller/**', // Exclude controller classes
@@ -89,13 +87,13 @@ plugins.withType(JacocoPlugin).configureEach {
 
 sonarqube {
 	properties {
-		property "sonar.projectKey", "DavidAlzate88_seminario1041B" // Replace with your actual keys
-		property "sonar.organization", "davidalzate88" // Replace with your organization key
+		property "sonar.projectKey", "DavidAlzate88_seminario1041B"
+		property "sonar.organization", "davidalzate88"
 		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
-		property "sonar.sources", "src/main/java"
-		property "sonar.tests", "src/test/java"
-		property "sonar.exclusions", "**/model/**, **/configuration/**, **/controller/**, **/exception/**, **/repository/**, **/Seminario1041BApplication*" // Add any exclusions you need
+		property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+		property "sonar.sources", "src/main"
+		property "sonar.tests", "src/test"
+		property "sonar.exclusions", "**/model/**, **/controller/**, **/exception/**, **/repository/**, **/Seminario1041BApplication*"
 		property "sonar.java.binaries", "build/classes/java/main"
 	}
 }
