@@ -3,8 +3,6 @@ package co.edu.uniajc.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Builder
 @Data
 @NoArgsConstructor
