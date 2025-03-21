@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+    private final String testEmail = "test@example.com";
 
     @Mock
     private UserRepository userRepository;
@@ -32,12 +33,12 @@ class UserServiceTest {
         testUser = User.builder()
                 .id(1L)
                 .name("Test User")
-                .email("test@example.com")
+                .email(testEmail)
                 .build();
     }
 
     @Test
-    void save_success() {
+    void saveSuccess() {
         when(userRepository.save(testUser)).thenReturn(testUser);
 
         User savedUser = userService.save(testUser);
@@ -47,7 +48,7 @@ class UserServiceTest {
     }
 
     @Test
-    void save_emailAlreadyInUse() {
+    void saveEmailAlreadyInUse() {
         when(userRepository.save(testUser)).thenThrow(new DataIntegrityViolationException("Email already in use"));
 
         assertThrows(UserException.class, () -> userService.save(testUser));
@@ -55,30 +56,32 @@ class UserServiceTest {
     }
 
     @Test
-    void findByEmail_success() {
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+    void findByEmailSuccess() {
+        when(userRepository.findByEmail(testEmail)).thenReturn(Optional.of(testUser));
 
-        User foundUser = userService.findByEmail("test@example.com");
+        User foundUser = userService.findByEmail(testEmail);
 
         assertEquals(testUser, foundUser);
-        verify(userRepository, times(1)).findByEmail("test@example.com");
+        verify(userRepository, times(1)).findByEmail(testEmail);
     }
 
     @Test
-    void findByEmail_notFound() {
-        when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
+    void findByEmailNotFound() {
+        String testNonExistentEmail = "nonexistent@example.com";
+        when(userRepository.findByEmail(testNonExistentEmail)).thenReturn(Optional.empty());
 
-        User foundUser = userService.findByEmail("nonexistent@example.com");
+        User foundUser = userService.findByEmail(testNonExistentEmail);
 
         assertNull(foundUser);
-        verify(userRepository, times(1)).findByEmail("nonexistent@example.com");
+        verify(userRepository, times(1)).findByEmail(testNonExistentEmail);
     }
 
     @Test
-    void findByEmail_exception() {
-        when(userRepository.findByEmail("error@example.com")).thenThrow(new RuntimeException("Database error"));
+    void findByEmailException() {
+        String errorEmail = "error@example.com";
+        when(userRepository.findByEmail(errorEmail)).thenThrow(new RuntimeException("Database error"));
 
-        assertThrows(UserException.class, () -> userService.findByEmail("error@example.com"));
-        verify(userRepository, times(1)).findByEmail("error@example.com");
+        assertThrows(UserException.class, () -> userService.findByEmail(errorEmail));
+        verify(userRepository, times(1)).findByEmail(errorEmail);
     }
 }
