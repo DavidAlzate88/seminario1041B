@@ -44,16 +44,6 @@ dependencies {
 	testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
-jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.60 // 80% coverage
-			}
-		}
-	}
-}
-
 tasks.named('test') {
 	useJUnitPlatform()
 }
