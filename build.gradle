@@ -44,6 +44,16 @@ dependencies {
 	testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.80 // 80% coverage
+			}
+		}
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
@@ -85,7 +95,7 @@ sonarqube {
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.sources", "src/main"
 		property "sonar.tests", "src/test"
-		property "sonar.exclusions", "**/model/**, **/controller/**, **/exception/**, **/repository/**, **/Seminario1041BApplication*, *.sql"
+		property "sonar.coverage.exclusions", "**/test/**, **/resources/**, **/model/**, **/controller/**, **/exception/**, **/repository/**"
 		property "sonar.java.binaries", "build/classes/java/main"
 	}
 }
