@@ -21,7 +21,7 @@ import org.springframework.dao.DataAccessException;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-    private final String databaseError = "Database error";
+    private static final String DATABASE_ERROR = "Database error";
 
     @Mock
     private ProductRepository productRepository;
@@ -63,7 +63,7 @@ class ProductServiceTest {
 
     @Test
     void createProductShouldThrowExceptionOnError() {
-        when(productRepository.save(product1)).thenThrow(new ProductException(databaseError ));
+        when(productRepository.save(product1)).thenThrow(new ProductException(DATABASE_ERROR));
 
         assertThrows(RuntimeException.class, () -> productService.createProduct(product1));
         verify(productRepository, times(1)).save(product1);
@@ -85,7 +85,7 @@ class ProductServiceTest {
 
     @Test
     void findAllShouldThrowProductExceptionWhenRepositoryThrowsException() {
-        when(productRepository.findAll()).thenThrow(new DataAccessException(databaseError ) {});
+        when(productRepository.findAll()).thenThrow(new DataAccessException(DATABASE_ERROR) {});
 
         assertThrows(ProductException.class, () -> productService.findAll());
         verify(productRepository, times(1)).findAll();
@@ -120,7 +120,7 @@ class ProductServiceTest {
 
     @Test
     void findByIdShouldThrowProductExceptionWhenRepositoryThrowsException() {
-        when(productRepository.findById(1L)).thenThrow(new DataAccessException(databaseError ) {});
+        when(productRepository.findById(1L)).thenThrow(new DataAccessException(DATABASE_ERROR) {});
 
         assertThrows(ProductException.class, () -> productService.findById(1L));
         verify(productRepository, times(1)).findById(1L);

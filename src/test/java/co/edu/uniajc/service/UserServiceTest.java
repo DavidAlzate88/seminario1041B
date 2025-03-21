@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    private final String testEmail = "test@example.com";
+    private static final String TEST_EMAIL = "test@example.com";
 
     @Mock
     private UserRepository userRepository;
@@ -33,7 +33,7 @@ class UserServiceTest {
         testUser = User.builder()
                 .id(1L)
                 .name("Test User")
-                .email(testEmail)
+                .email(TEST_EMAIL)
                 .build();
     }
 
@@ -57,12 +57,12 @@ class UserServiceTest {
 
     @Test
     void findByEmailSuccess() {
-        when(userRepository.findByEmail(testEmail)).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.of(testUser));
 
-        User foundUser = userService.findByEmail(testEmail);
+        User foundUser = userService.findByEmail(TEST_EMAIL);
 
         assertEquals(testUser, foundUser);
-        verify(userRepository, times(1)).findByEmail(testEmail);
+        verify(userRepository, times(1)).findByEmail(TEST_EMAIL);
     }
 
     @Test
