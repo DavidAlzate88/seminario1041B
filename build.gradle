@@ -96,7 +96,7 @@ sonarqube {
 		property "sonar.sources", "src/main"
 		property "sonar.tests", "src/test"
 		property "sonar.exclusions", "**/resources/**"
-		property "sonar.coverage.exclusions", "**/model/**, **/controller/**, **/exception/**, **/repository/**, **/test/**"
+		property "sonar.coverage.exclusions", "**/model/**, **/controller/**, **/exception/**, **/repository/**, **/test/**, **/Seminario1041BApplication.*"
 		property "sonar.java.binaries", "build/classes/java/main"
 	}
 }
