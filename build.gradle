@@ -32,7 +32,6 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 	runtimeOnly 'org.postgresql:postgresql'
 
@@ -45,8 +44,26 @@ dependencies {
 	testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.60 // 80% coverage
+			}
+		}
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
 jacocoTestReport {
-	dependsOn test // tests are required to run before generating the report
+	dependsOn test
 	reports {
 		xml.required = true
 		html.required = true
@@ -55,9 +72,11 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
+					'co/edu/uniajc/Seminario1041BApplication.*', // Exclude main class
 					'co/edu/uniajc/model/**', // Exclude model classes
-					'co/edu/uniajc/config/**', // Exclude config classes
-					'co/edu/uniajc/Application.java', // Exclude main application class
+					'co/edu/uniajc/repository/**', // Exclude model classes
+					'co/edu/uniajc/exception/**', // Exclude exception classes
+					'co/edu/uniajc/controller/**', // Exclude controller classes
 			])
 		}))
 	}
@@ -65,31 +84,19 @@ jacocoTestReport {
 	finalizedBy jacocoTestCoverageVerification
 }
 
-jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			enabled = true
-			limit {
-				minimum = 0.30 // 80% coverage
-			}
-		}
-	}
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-	finalizedBy jacocoTestReport
+plugins.withType(JacocoPlugin).configureEach {
+	test.finalizedBy 'jacocoTestReport'
 }
 
 sonarqube {
 	properties {
-		property "sonar.projectKey", "DavidAlzate88_seminario1041B" // Replace with your actual keys
-		property "sonar.organization", "davidalzate88" // Replace with your organization key
+		property "sonar.projectKey", "DavidAlzate88_seminario1041B"
+		property "sonar.organization", "davidalzate88"
 		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.java.coveragePlugin", "jacoco"
-		property "sonar.coverage.jacoco.xmlReportPaths", "${project.projectDir}/reports/jacoco/test/jacocoTestReport.xml"
-		property "sonar.sources", "src/main/java"
-		property "sonar.tests", "src/test/java"
-		property "sonar.exclusions", "**/model/**, **/config/**, **/Seminario1041BApplication.*" // Add any exclusions you need
+		property "sonar.sources", "src/main"
+		property "sonar.tests", "src/test"
+		property "sonar.exclusions", "**/resources/**"
+		property "sonar.coverage.exclusions", "**/model/**, **/controller/**, **/exception/**, **/repository/**, **/test/**, **/Seminario1041BApplication.*"
+		property "sonar.java.binaries", "build/classes/java/main"
 	}
 }

@@ -50,7 +50,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_success() {
+    void createOrderSuccess() {
         when(orderRepository.save(testOrder)).thenReturn(testOrder);
 
         Order createdOrder = orderService.createOrder(testOrder);
@@ -60,7 +60,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void createOrder_failure() {
+    void createOrderFailure() {
         when(orderRepository.save(testOrder)).thenThrow(new RuntimeException("Database error"));
 
         assertThrows(OrderException.class, () -> orderService.createOrder(testOrder));
@@ -68,7 +68,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findById_success() {
+    void findByIdSuccess() {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(testOrder));
 
         Optional<Order> foundOrder = orderService.findById(1L);
@@ -79,7 +79,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findById_notFound() {
+    void findByIdNotFound() {
         when(orderRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(OrderException.class, () -> orderService.findById(1L));
@@ -87,7 +87,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findById_dataAccessException() {
+    void findByIdDataAccessException() {
         when(orderRepository.findById(1L)).thenThrow(new DataAccessResourceFailureException("Database connection failed"));
 
         assertThrows(OrderException.class, () -> orderService.findById(1L));
@@ -95,7 +95,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findById_unexpectedException() {
+    void findByIdUnexpectedException() {
         when(orderRepository.findById(1L)).thenThrow(new NullPointerException("Unexpected error"));
 
         assertThrows(OrderException.class, () -> orderService.findById(1L));
@@ -103,7 +103,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findAll_success() {
+    void findAllSuccess() {
         List<Order> orderList = Arrays.asList(testOrder, Order.builder().build());
         when(orderRepository.findAll()).thenReturn(orderList);
 
@@ -114,7 +114,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findAll_dataAccessException() {
+    void findAllDataAccessException() {
         when(orderRepository.findAll()).thenThrow(new DataAccessResourceFailureException("Database connection failed"));
 
         assertThrows(OrderException.class, () -> orderService.findAll());
@@ -122,7 +122,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void findAll_unexpectedException() {
+    void findAllUnexpectedException() {
         when(orderRepository.findAll()).thenThrow(new NullPointerException("Unexpected error"));
         assertThrows(OrderException.class, () -> orderService.findAll());
         verify(orderRepository, times(1)).findAll();
