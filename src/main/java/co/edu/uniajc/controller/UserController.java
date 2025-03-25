@@ -46,7 +46,7 @@ public class UserController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{email}")
     @Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario segun su email")
     @ApiResponses(value = {
             @ApiResponse(
@@ -71,7 +71,27 @@ public class UserController {
     }
 
     // todo: crear endpoint para obtener usuario por nombre
-    // todo: crear endpoint para obtener usuario por fecha de ingreso
-    // todo: crear endpoint para obtener la lista de usuarios con rol cliente
-    // todo: crear endpoint para modificar el rol del usuario
+    @GetMapping("/{name}")
+    @Operation(summary = "Obtener usuario por nombre", description = "Devuelve un usuario segun su nombre")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "usuario encontrado",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = User.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<User> getUserByName(@RequestParam String name) {
+        User user = userService.findByName(name);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(user);
+    }
 }
