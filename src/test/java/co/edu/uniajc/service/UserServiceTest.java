@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     private static final String TEST_EMAIL = "test@example.com";
     private static final String TEST_NAME = "Test User";
+    private static final String TEST_ROLE_NAME = "Client";
 
     @Mock
     private UserRepository userRepository;
@@ -114,5 +117,25 @@ class UserServiceTest {
 
         assertThrows(UserException.class, () -> userService.findByName(errorName));
         verify(userRepository, times(1)).findByName(errorName);
+    }
+
+    @Test
+    void findUsersByRoleNameSuccess() {
+        List<User> users = new ArrayList<>();
+        users.add(testUser);
+        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenReturn(users);
+
+        List<User> foundUsers = userService.findUsersByRoleName(TEST_ROLE_NAME);
+
+        assertEquals(users, foundUsers);
+        verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
+    }
+
+    @Test
+    void findUsersByRoleNameException() {
+        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.findUsersByRoleName(TEST_ROLE_NAME));
+        verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
     }
 }
