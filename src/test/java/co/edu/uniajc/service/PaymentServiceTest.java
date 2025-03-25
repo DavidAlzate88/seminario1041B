@@ -19,6 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// adding comments to test sonar
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
 
@@ -40,7 +41,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void createPayment_success() {
+    void createPaymentSuccess() {
         when(paymentRepository.save(testPayment)).thenReturn(testPayment);
 
         Payment createdPayment = paymentService.createPayment(testPayment);
@@ -50,7 +51,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void createPayment_failure() {
+    void createPaymentFailure() {
         when(paymentRepository.save(testPayment)).thenThrow(new RuntimeException("Database error"));
 
         assertThrows(PaymentException.class, () -> paymentService.createPayment(testPayment));
@@ -58,7 +59,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void findAll_success() {
+    void findAllSuccess() {
         List<Payment> paymentList = Arrays.asList(testPayment, Payment.builder().build());
         when(paymentRepository.findAll()).thenReturn(paymentList);
 
@@ -69,7 +70,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void findAll_dataAccessException() {
+    void findAllDataAccessException() {
         when(paymentRepository.findAll()).thenThrow(new DataAccessResourceFailureException("Database connection failed"));
 
         assertThrows(PaymentException.class, () -> paymentService.findAll());
@@ -77,7 +78,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void findAll_unexpectedException() {
+    void findAllUnexpectedException() {
         when(paymentRepository.findAll()).thenThrow(new NullPointerException("Unexpected error"));
 
         assertThrows(PaymentException.class, () -> paymentService.findAll());
@@ -85,7 +86,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void findById_success() {
+    void findByIdSuccess() {
         when(paymentRepository.findById(1L)).thenReturn(Optional.of(testPayment));
 
         Optional<Payment> foundPayment = paymentService.findById(1L);
@@ -96,7 +97,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void findById_notFound() {
+    void findByIdNotFound() {
         when(paymentRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(PaymentException.class, () -> paymentService.findById(1L));
@@ -104,7 +105,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void findById_dataAccessException() {
+    void findByIdDataAccessException() {
         when(paymentRepository.findById(1L)).thenThrow(new DataAccessResourceFailureException("Database connection failed"));
 
         assertThrows(PaymentException.class, () -> paymentService.findById(1L));
@@ -112,7 +113,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void findById_unexpectedException() {
+    void findByIdUnexpectedException() {
         when(paymentRepository.findById(1L)).thenThrow(new NullPointerException("Unexpected error"));
 
         assertThrows(PaymentException.class, () -> paymentService.findById(1L));

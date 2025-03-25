@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
-@Tag(name="Usuarios", description = "Operaciones relacionadas con usuarios")
+@Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
 public class UserController {
     private final UserService userService;
 
@@ -69,4 +69,9 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
+
+    // todo: crear endpoint para obtener usuario por nombre
+    // todo: crear endpoint para obtener usuario por fecha de ingreso
+    // todo: crear endpoint para obtener la lista de usuarios con rol cliente
+    // todo: crear endpoint para modificar el rol del usuario
 }

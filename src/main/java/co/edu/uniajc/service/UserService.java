@@ -32,4 +32,12 @@ public class UserService {
         }
     }
 
+    public User findByName(String name) {
+        try {
+            return userRepository.findByName(name).orElse(null);
+        } catch (Exception e) {
+            throw new UserException("Error retrieving user with name " + name, e);
+        }
+    }
+
 }
