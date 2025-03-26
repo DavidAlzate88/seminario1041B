@@ -1,5 +1,6 @@
 package co.edu.uniajc.controller;
 
+import co.edu.uniajc.model.Role;
 import co.edu.uniajc.model.User;
 import co.edu.uniajc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -154,6 +155,34 @@ public class UserController {
             return ResponseEntity.ok(users);
         } catch (ParseException e) {
             return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/{userId}/roles")
+    @Operation(summary = "Actualizar roles de un usuario", description = "Actualiza los roles asociados a un usuario específico")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Roles actualizados exitosamente",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = User.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<User> updateUserRoles(@PathVariable Long userId, @RequestBody List<Role> roles) {
+        try {
+            User updatedUser = userService.updateUserRoles(userId, roles);
+            if (updatedUser == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

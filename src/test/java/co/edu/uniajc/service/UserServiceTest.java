@@ -1,6 +1,7 @@
 package co.edu.uniajc.service;
 
 import co.edu.uniajc.exception.UserException;
+import co.edu.uniajc.model.Role;
 import co.edu.uniajc.model.User;
 import co.edu.uniajc.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ class UserServiceTest {
     private UserService userService;
 
     private User testUser;
+    private List<Role> testRoles;
     private Date testCreationDate;
 
     @BeforeEach
@@ -41,6 +43,13 @@ class UserServiceTest {
                 .name(TEST_NAME)
                 .email(TEST_EMAIL)
                 .build();
+        
+        testRoles = new ArrayList<>();
+        testRoles.add(Role.builder().id(1L).name("Test Role").build());
+        testUser.setRoles(testRoles);
+
+        testCreationDate = new Date();
+        testUser.setCreationDate(testCreationDate);
     }
 
     @Test
@@ -160,5 +169,36 @@ class UserServiceTest {
         assertThrows(UserException.class, () -> userService.findUsersByCreationDate(testCreationDate));
         verify(userRepository, times(1)).findByCreationDate(testCreationDate);
     }
+ 
+    @Test
+    void updateUserRolesSuccess() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(userRepository.save(testUser)).thenReturn(testUser);
 
+        User updatedUser = userService.updateUserRoles(1L, testRoles);
+
+        assertEquals(testUser, updatedUser);
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).save(testUser);
+    }
+
+    @Test
+    void updateUserRolesUserNotFound() {
+        when(userRepository.findById(2L)).thenReturn(Optional.empty());
+
+        User updatedUser = userService.updateUserRoles(2L, testRoles);
+
+        assertNull(updatedUser);
+        verify(userRepository, times(1)).findById(2L);
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void updateUserRolesException() {
+        when(userRepository.findById(1L)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.updateUserRoles(1L, testRoles));
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, never()).save(any(User.class));
+    }
 }
