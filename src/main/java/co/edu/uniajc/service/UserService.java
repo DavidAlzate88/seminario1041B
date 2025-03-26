@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,6 +48,14 @@ public class UserService {
             return userRepository.findUsersByRoleName(roleName);
         } catch (Exception e) {
             throw new UserException("Error retrieving users with role " + roleName, e);
+        }
+    }
+
+    public List<User> findUsersByCreationDate(Date creationDate) {
+        try {
+            return userRepository.findByCreationDate(creationDate);
+        } catch (Exception e) {
+            throw new UserException("Error retrieving users with creation date " + creationDate, e);
         }
     }
 
