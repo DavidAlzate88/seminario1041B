@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
@@ -93,5 +95,32 @@ public class UserController {
         }
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/role/{roleName}")
+    @Operation(summary = "Obtener clientes", description = "Devuelve una lista de usuarios por rol 'Cliente' ")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Clientes encontrados",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = User.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Clientes no encontrados", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<List<User>> getUsersByRoleName(@PathVariable String roleName) {
+        try {
+            List<User> users = userService.findUsersByRoleName(roleName);
+            if (users.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
