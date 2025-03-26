@@ -94,6 +94,4 @@ public class OrderController {
             return ResponseEntity.internalServerError().body(Optional.empty());
         }
     }
-
-//    todo: crear endpoint para obtener un pedido en estado_compra = realizada
 }

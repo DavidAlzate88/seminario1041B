@@ -76,7 +76,6 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // todo: crear endpoint para obtener usuario por nombre
     @GetMapping("/{name}")
     @Operation(summary = "Obtener usuario por nombre", description = "Devuelve un usuario segun su nombre")
     @ApiResponses(value = {
