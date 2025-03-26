@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ class UserServiceTest {
     private UserService userService;
 
     private User testUser;
+    private Date testCreationDate;
 
     @BeforeEach
     void setUp() {
@@ -138,4 +140,25 @@ class UserServiceTest {
         assertThrows(UserException.class, () -> userService.findUsersByRoleName(TEST_ROLE_NAME));
         verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
     }
+
+    @Test
+    void findUsersByCreationDateSuccess() {
+        List<User> users = new ArrayList<>();
+        users.add(testUser);
+        when(userRepository.findByCreationDate(testCreationDate)).thenReturn(users);
+
+        List<User> foundUsers = userService.findUsersByCreationDate(testCreationDate);
+
+        assertEquals(users, foundUsers);
+        verify(userRepository, times(1)).findByCreationDate(testCreationDate);
+    }
+
+    @Test
+    void findUsersByCreationDateException() {
+        when(userRepository.findByCreationDate(testCreationDate)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.findUsersByCreationDate(testCreationDate));
+        verify(userRepository, times(1)).findByCreationDate(testCreationDate);
+    }
+
 }
