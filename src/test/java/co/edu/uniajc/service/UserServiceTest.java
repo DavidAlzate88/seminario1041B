@@ -1,6 +1,7 @@
 package co.edu.uniajc.service;
 
 import co.edu.uniajc.exception.UserException;
+import co.edu.uniajc.model.Role;
 import co.edu.uniajc.model.User;
 import co.edu.uniajc.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,6 +24,7 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     private static final String TEST_EMAIL = "test@example.com";
     private static final String TEST_NAME = "Test User";
+    private static final String TEST_ROLE_NAME = "Client";
 
     @Mock
     private UserRepository userRepository;
@@ -28,6 +33,8 @@ class UserServiceTest {
     private UserService userService;
 
     private User testUser;
+    private List<Role> testRoles;
+    private Date testCreationDate;
 
     @BeforeEach
     void setUp() {
@@ -36,6 +43,13 @@ class UserServiceTest {
                 .name(TEST_NAME)
                 .email(TEST_EMAIL)
                 .build();
+        
+        testRoles = new ArrayList<>();
+        testRoles.add(Role.builder().id(1L).name("Test Role").build());
+        testUser.setRoles(testRoles);
+
+        testCreationDate = new Date();
+        testUser.setCreationDate(testCreationDate);
     }
 
     @Test
@@ -114,5 +128,77 @@ class UserServiceTest {
 
         assertThrows(UserException.class, () -> userService.findByName(errorName));
         verify(userRepository, times(1)).findByName(errorName);
+    }
+
+    @Test
+    void findUsersByRoleNameSuccess() {
+        List<User> users = new ArrayList<>();
+        users.add(testUser);
+        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenReturn(users);
+
+        List<User> foundUsers = userService.findUsersByRoleName(TEST_ROLE_NAME);
+
+        assertEquals(users, foundUsers);
+        verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
+    }
+
+    @Test
+    void findUsersByRoleNameException() {
+        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.findUsersByRoleName(TEST_ROLE_NAME));
+        verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
+    }
+
+    @Test
+    void findUsersByCreationDateSuccess() {
+        List<User> users = new ArrayList<>();
+        users.add(testUser);
+        when(userRepository.findByCreationDate(testCreationDate)).thenReturn(users);
+
+        List<User> foundUsers = userService.findUsersByCreationDate(testCreationDate);
+
+        assertEquals(users, foundUsers);
+        verify(userRepository, times(1)).findByCreationDate(testCreationDate);
+    }
+
+    @Test
+    void findUsersByCreationDateException() {
+        when(userRepository.findByCreationDate(testCreationDate)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.findUsersByCreationDate(testCreationDate));
+        verify(userRepository, times(1)).findByCreationDate(testCreationDate);
+    }
+ 
+    @Test
+    void updateUserRolesSuccess() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(userRepository.save(testUser)).thenReturn(testUser);
+
+        User updatedUser = userService.updateUserRoles(1L, testRoles);
+
+        assertEquals(testUser, updatedUser);
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, times(1)).save(testUser);
+    }
+
+    @Test
+    void updateUserRolesUserNotFound() {
+        when(userRepository.findById(2L)).thenReturn(Optional.empty());
+
+        User updatedUser = userService.updateUserRoles(2L, testRoles);
+
+        assertNull(updatedUser);
+        verify(userRepository, times(1)).findById(2L);
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void updateUserRolesException() {
+        when(userRepository.findById(1L)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.updateUserRoles(1L, testRoles));
+        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, never()).save(any(User.class));
     }
 }
