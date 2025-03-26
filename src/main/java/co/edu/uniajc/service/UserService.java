@@ -59,4 +59,17 @@ public class UserService {
         }
     }
 
+    public User updateUserRoles(Long userId, List<Role> roles) {
+        try{
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                user.setRoles(roles);
+                return userRepository.save(user);
+            }
+            return null;
+        } catch (Exception e){
+            throw new UserException("Error Updating User Roles", e);
+        }
+    }
 }
