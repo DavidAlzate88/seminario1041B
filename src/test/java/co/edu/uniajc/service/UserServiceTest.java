@@ -11,6 +11,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,6 +22,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     private static final String TEST_EMAIL = "test@example.com";
+    private static final String TEST_NAME = "Test User";
+    private static final String TEST_ROLE_NAME = "Client";
 
     @Mock
     private UserRepository userRepository;
@@ -27,12 +32,13 @@ class UserServiceTest {
     private UserService userService;
 
     private User testUser;
+    private Date testCreationDate;
 
     @BeforeEach
     void setUp() {
         testUser = User.builder()
                 .id(1L)
-                .name("Test User")
+                .name(TEST_NAME)
                 .email(TEST_EMAIL)
                 .build();
     }
@@ -84,4 +90,75 @@ class UserServiceTest {
         assertThrows(UserException.class, () -> userService.findByEmail(errorEmail));
         verify(userRepository, times(1)).findByEmail(errorEmail);
     }
+
+    @Test
+    void findByNameSuccess() {
+        when(userRepository.findByName(TEST_NAME)).thenReturn(Optional.of(testUser));
+
+        User foundUser = userService.findByName(TEST_NAME);
+
+        assertEquals(testUser, foundUser);
+        verify(userRepository, times(1)).findByName(TEST_NAME);
+    }
+
+    @Test
+    void findByNameNotFound() {
+        String testNonExistentName = "Nonexistent User";
+        when(userRepository.findByName(testNonExistentName)).thenReturn(Optional.empty());
+
+        User foundUser = userService.findByName(testNonExistentName);
+
+        assertNull(foundUser);
+        verify(userRepository, times(1)).findByName(testNonExistentName);
+    }
+
+    @Test
+    void findByNameException() {
+        String errorName = "Error User";
+        when(userRepository.findByName(errorName)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.findByName(errorName));
+        verify(userRepository, times(1)).findByName(errorName);
+    }
+
+    @Test
+    void findUsersByRoleNameSuccess() {
+        List<User> users = new ArrayList<>();
+        users.add(testUser);
+        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenReturn(users);
+
+        List<User> foundUsers = userService.findUsersByRoleName(TEST_ROLE_NAME);
+
+        assertEquals(users, foundUsers);
+        verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
+    }
+
+    @Test
+    void findUsersByRoleNameException() {
+        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.findUsersByRoleName(TEST_ROLE_NAME));
+        verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
+    }
+
+    @Test
+    void findUsersByCreationDateSuccess() {
+        List<User> users = new ArrayList<>();
+        users.add(testUser);
+        when(userRepository.findByCreationDate(testCreationDate)).thenReturn(users);
+
+        List<User> foundUsers = userService.findUsersByCreationDate(testCreationDate);
+
+        assertEquals(users, foundUsers);
+        verify(userRepository, times(1)).findByCreationDate(testCreationDate);
+    }
+
+    @Test
+    void findUsersByCreationDateException() {
+        when(userRepository.findByCreationDate(testCreationDate)).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(UserException.class, () -> userService.findUsersByCreationDate(testCreationDate));
+        verify(userRepository, times(1)).findByCreationDate(testCreationDate);
+    }
+
 }
