@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -37,6 +39,14 @@ public class UserService {
             return userRepository.findByName(name).orElse(null);
         } catch (Exception e) {
             throw new UserException("Error retrieving user with name " + name, e);
+        }
+    }
+
+    public List<User> findUsersByRoleName(String roleName) {
+        try {
+            return userRepository.findUsersByRoleName(roleName);
+        } catch (Exception e) {
+            throw new UserException("Error retrieving users with role " + roleName, e);
         }
     }
 

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
@@ -46,7 +48,7 @@ public class UserController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/{email}")
     @Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario segun su email")
     @ApiResponses(value = {
             @ApiResponse(
@@ -71,7 +73,54 @@ public class UserController {
     }
 
     // todo: crear endpoint para obtener usuario por nombre
-    // todo: crear endpoint para obtener usuario por fecha de ingreso
-    // todo: crear endpoint para obtener la lista de usuarios con rol cliente
-    // todo: crear endpoint para modificar el rol del usuario
+    @GetMapping("/{name}")
+    @Operation(summary = "Obtener usuario por nombre", description = "Devuelve un usuario segun su nombre")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "usuario encontrado",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = User.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<User> getUserByName(@RequestParam String name) {
+        User user = userService.findByName(name);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/role/{roleName}")
+    @Operation(summary = "Obtener clientes", description = "Devuelve una lista de usuarios por rol 'Cliente' ")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Clientes encontrados",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = User.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Clientes no encontrados", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<List<User>> getUsersByRoleName(@PathVariable String roleName) {
+        try {
+            List<User> users = userService.findUsersByRoleName(roleName);
+            if (users.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
