@@ -1,5 +1,6 @@
 package co.edu.uniajc.controller;
 
+import co.edu.uniajc.model.Role;
 import co.edu.uniajc.model.User;
 import co.edu.uniajc.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;

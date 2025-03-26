@@ -1,6 +1,7 @@
 package co.edu.uniajc.service;
 
 import co.edu.uniajc.exception.UserException;
+import co.edu.uniajc.model.Role;
 import co.edu.uniajc.model.User;
 import co.edu.uniajc.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ class UserServiceTest {
     private UserService userService;
 
     private User testUser;
+    private List<Role> testRoles;
     private Date testCreationDate;
 
     @BeforeEach
@@ -41,6 +43,13 @@ class UserServiceTest {
                 .name(TEST_NAME)
                 .email(TEST_EMAIL)
                 .build();
+        
+        testRoles = new ArrayList<>();
+        testRoles.add(Role.builder().id(1L).name("Test Role").build());
+        testUser.setRoles(testRoles);
+
+        testCreationDate = new Date();
+        testUser.setCreationDate(testCreationDate);
     }
 
     @Test
