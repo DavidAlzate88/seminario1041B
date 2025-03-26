@@ -25,6 +25,7 @@ class UserServiceTest {
     private static final String TEST_EMAIL = "test@example.com";
     private static final String TEST_NAME = "Test User";
     private static final String TEST_ROLE_NAME = "Client";
+    private static final String DATABASE_ERROR = "Database error";
 
     @Mock
     private UserRepository userRepository;
@@ -94,7 +95,7 @@ class UserServiceTest {
     @Test
     void findByEmailException() {
         String errorEmail = "error@example.com";
-        when(userRepository.findByEmail(errorEmail)).thenThrow(new RuntimeException("Database error"));
+        when(userRepository.findByEmail(errorEmail)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
         assertThrows(UserException.class, () -> userService.findByEmail(errorEmail));
         verify(userRepository, times(1)).findByEmail(errorEmail);
@@ -124,7 +125,7 @@ class UserServiceTest {
     @Test
     void findByNameException() {
         String errorName = "Error User";
-        when(userRepository.findByName(errorName)).thenThrow(new RuntimeException("Database error"));
+        when(userRepository.findByName(errorName)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
         assertThrows(UserException.class, () -> userService.findByName(errorName));
         verify(userRepository, times(1)).findByName(errorName);
@@ -144,7 +145,7 @@ class UserServiceTest {
 
     @Test
     void findUsersByRoleNameException() {
-        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenThrow(new RuntimeException("Database error"));
+        when(userRepository.findUsersByRoleName(TEST_ROLE_NAME)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
         assertThrows(UserException.class, () -> userService.findUsersByRoleName(TEST_ROLE_NAME));
         verify(userRepository, times(1)).findUsersByRoleName(TEST_ROLE_NAME);
@@ -164,7 +165,7 @@ class UserServiceTest {
 
     @Test
     void findUsersByCreationDateException() {
-        when(userRepository.findByCreationDate(testCreationDate)).thenThrow(new RuntimeException("Database error"));
+        when(userRepository.findByCreationDate(testCreationDate)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
         assertThrows(UserException.class, () -> userService.findUsersByCreationDate(testCreationDate));
         verify(userRepository, times(1)).findByCreationDate(testCreationDate);
@@ -195,7 +196,7 @@ class UserServiceTest {
 
     @Test
     void updateUserRolesException() {
-        when(userRepository.findById(1L)).thenThrow(new RuntimeException("Database error"));
+        when(userRepository.findById(1L)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
         assertThrows(UserException.class, () -> userService.updateUserRoles(1L, testRoles));
         verify(userRepository, times(1)).findById(1L);
