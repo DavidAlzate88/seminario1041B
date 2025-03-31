@@ -52,4 +52,17 @@ public class ProductService {
             throw new ProductException("Unexpected error retrieving product with id " + id, e);
         }
     }
+
+    public void deleteProduct(Long id) {
+        try {
+            if (!productRepository.existsById(id)) {
+                throw new ProductException("Product with id " + id + " not found");
+            }
+            productRepository.deleteById(id);
+        } catch (DataAccessException e) {
+            throw new ProductException("Error deleting product from database", e);
+        } catch (Exception e) {
+            throw new ProductException("Unexpected error deleting product with id " + id, e);
+        }
+    }
 }
