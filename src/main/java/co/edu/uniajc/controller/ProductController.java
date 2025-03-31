@@ -1,5 +1,6 @@
 package co.edu.uniajc.controller;
 
+import co.edu.uniajc.exception.ProductException;
 import co.edu.uniajc.model.Product;
 import co.edu.uniajc.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,6 +92,28 @@ public class ProductController {
             return ResponseEntity.ok(productService.findById(id));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Optional.empty());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar producto por ID", description = "Elimina un producto según su ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Producto eliminado exitosamente",
+                    content = @Content
+            ),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        try {
+            productService.deleteProduct(id);
+            return ResponseEntity.noContent().build();
+        } catch (ProductException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
