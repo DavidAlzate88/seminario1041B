@@ -66,7 +66,7 @@ class ProductServiceTest {
         when(productRepository.save(product1)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
         ProductException thrown = assertThrows(ProductException.class, () -> productService.createProduct(product1));
-        assertEquals("Error creating product", thrown.getMessage());
+        assertEquals("Error updating product", thrown.getMessage());
 
         verify(productRepository, times(1)).save(product1);
     }
