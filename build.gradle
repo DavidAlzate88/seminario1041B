@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.3'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
+	id "org.sonarqube" version "6.0.1.5171"
 }
 
 group = 'co.edu.uniajc'
@@ -30,11 +32,71 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
 	runtimeOnly 'org.postgresql:postgresql'
+
+	// Junit
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+	// Mockito
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.mockito:mockito-junit-jupiter'
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.60 // 80% coverage
+			}
+		}
+	}
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+test {
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+		html.required = true
+	}
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'co/edu/uniajc/Seminario1041BApplication.*', // Exclude main class
+					'co/edu/uniajc/model/**', // Exclude model classes
+					'co/edu/uniajc/repository/**', // Exclude model classes
+					'co/edu/uniajc/exception/**', // Exclude exception classes
+					'co/edu/uniajc/controller/**', // Exclude controller classes
+			])
+		}))
+	}
+
+	finalizedBy jacocoTestCoverageVerification
+}
+
+plugins.withType(JacocoPlugin).configureEach {
+	test.finalizedBy 'jacocoTestReport'
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "DavidAlzate88_seminario1041B"
+		property "sonar.organization", "davidalzate88"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.sources", "src/main"
+		property "sonar.tests", "src/test"
+		property "sonar.exclusions", "**/resources/**"
+		property "sonar.coverage.exclusions", "**/model/**, **/controller/**, **/exception/**, **/repository/**, **/test/**, **/Seminario1041BApplication.*"
+		property "sonar.java.binaries", "build/classes/java/main"
+	}
 }
