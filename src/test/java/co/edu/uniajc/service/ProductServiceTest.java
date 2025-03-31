@@ -62,11 +62,30 @@ class ProductServiceTest {
     }
 
     @Test
-    void createProductShouldThrowExceptionOnError() {
-        when(productRepository.save(product1)).thenThrow(new ProductException(DATABASE_ERROR));
+    void createProductShouldThrowExceptionOnErrorCreating() {
+        when(productRepository.save(product1)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
-        assertThrows(RuntimeException.class, () -> productService.createProduct(product1));
+        ProductException thrown = assertThrows(ProductException.class, () -> productService.createProduct(product1));
+        assertEquals("Error creating product", thrown.getMessage());
+
         verify(productRepository, times(1)).save(product1);
+    }
+
+    @Test
+    void createProductShouldThrowExceptionOnErrorUpdating() {
+        Product productToUpdate = Product.builder()
+                .id(1L)
+                .name("Updated Product 1")
+                .description("Updated description 1")
+                .price(15.0)
+                .stock(150)
+                .build();
+        when(productRepository.save(productToUpdate)).thenThrow(new RuntimeException(DATABASE_ERROR));
+
+        ProductException thrown = assertThrows(ProductException.class, () -> productService.createProduct(productToUpdate));
+        assertEquals("Error updating product", thrown.getMessage());
+
+        verify(productRepository, times(1)).save(productToUpdate);
     }
 
     @Test
