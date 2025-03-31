@@ -125,4 +125,44 @@ class ProductServiceTest {
         assertThrows(ProductException.class, () -> productService.findById(1L));
         verify(productRepository, times(1)).findById(1L);
     }
+
+    @Test
+    void deleteProductShouldDeleteProductWhenProductExists() {
+        when(productRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(productRepository).deleteById(1L);
+
+        assertDoesNotThrow(() -> productService.deleteProduct(1L));
+        verify(productRepository, times(1)).existsById(1L);
+        verify(productRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteProductShouldThrowProductExceptionWhenProductDoesNotExist() {
+        when(productRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(ProductException.class, () -> productService.deleteProduct(1L));
+        verify(productRepository, times(1)).existsById(1L);
+        verify(productRepository, never()).deleteById(1L);
+    }
+
+    @Test
+    void deleteProductShouldThrowProductExceptionWhenRepositoryThrowsDataAccessException() {
+        when(productRepository.existsById(1L)).thenReturn(true);
+        doThrow(new DataAccessException(DATABASE_ERROR) {}).when(productRepository).deleteById(1L);
+
+        assertThrows(ProductException.class, () -> productService.deleteProduct(1L));
+        verify(productRepository, times(1)).existsById(1L);
+        verify(productRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteProductShouldThrowProductExceptionForOtherExceptions() {
+        when(productRepository.existsById(1L)).thenReturn(true);
+        doThrow(new RuntimeException("Unexpected")).when(productRepository).deleteById(1L);
+
+        assertThrows(ProductException.class, () -> productService.deleteProduct(1L));
+        verify(productRepository, times(1)).existsById(1L);
+        verify(productRepository, times(1)).deleteById(1L);
+    }
 }
+
