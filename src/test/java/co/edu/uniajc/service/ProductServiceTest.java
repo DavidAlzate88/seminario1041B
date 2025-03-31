@@ -31,6 +31,7 @@ class ProductServiceTest {
 
     private Product product1;
     private Product product2;
+    private Product product3;
 
     @BeforeEach
     void setUp() {
@@ -49,6 +50,13 @@ class ProductServiceTest {
                 .price(20.0)
                 .stock(200)
                 .build();
+
+        product3 = Product.builder()
+                .name("Test Product 3")
+                .description("Test description 2")
+                .price(20.0)
+                .stock(200)
+                .build();
     }
 
     @Test
@@ -63,12 +71,12 @@ class ProductServiceTest {
 
     @Test
     void createProductShouldThrowExceptionOnErrorCreating() {
-        when(productRepository.save(product1)).thenThrow(new RuntimeException(DATABASE_ERROR));
+        when(productRepository.save(product3)).thenThrow(new RuntimeException(DATABASE_ERROR));
 
-        ProductException thrown = assertThrows(ProductException.class, () -> productService.createProduct(product1));
-        assertEquals("Error updating product", thrown.getMessage());
+        ProductException thrown = assertThrows(ProductException.class, () -> productService.createProduct(product3));
+        assertEquals("Error creating product", thrown.getMessage());
 
-        verify(productRepository, times(1)).save(product1);
+        verify(productRepository, times(1)).save(product3);
     }
 
     @Test
@@ -103,7 +111,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void findAllShouldThrowProductExceptionWhenRepositoryThrowsException() {
+    void findAllShouldThrowProductExceptionWhenRepositoryThrowsDataAccessException() {
         when(productRepository.findAll()).thenThrow(new DataAccessException(DATABASE_ERROR) {});
 
         assertThrows(ProductException.class, () -> productService.findAll());
@@ -184,4 +192,4 @@ class ProductServiceTest {
         verify(productRepository, times(1)).deleteById(1L);
     }
 }
-
+ 
