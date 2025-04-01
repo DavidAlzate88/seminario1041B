@@ -158,7 +158,7 @@ public class UserController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
+//Prueba Git Sonar
     @PutMapping("/{userId}/roles")
     @Operation(summary = "Actualizar roles de un usuario", description = "Actualiza los roles asociados a un usuario específico")
     @ApiResponses(value = {
