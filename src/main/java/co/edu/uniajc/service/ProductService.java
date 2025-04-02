@@ -24,7 +24,13 @@ public class ProductService {
         try {
             return productRepository.save(product);
         } catch (Exception e) {
-            throw new ProductException("Error creating product", e);
+            String message = "creating";
+
+            if (product.getId() != null) {
+                message = "updating";
+            }
+
+            throw new ProductException("Error " + message + " product", e);
         }
     }
 

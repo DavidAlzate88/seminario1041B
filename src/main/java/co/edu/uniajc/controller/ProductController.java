@@ -116,4 +116,42 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar producto por ID", description = "Actualiza un producto según su ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Producto actualizado exitosamente",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Product.class)
+                            )
+                    }),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+        try {
+            Optional<Product> optionalProduct = productService.findById(id);
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
+                product.setName(productDetails.getName());
+                product.setDescription(productDetails.getDescription());
+                product.setPrice(productDetails.getPrice());
+                product.setStock(productDetails.getStock());
+                product.setCategories(productDetails.getCategories()); //Important to update categories.
+
+                Product updatedProduct = productService.createProduct(product); //using create to update.
+                return ResponseEntity.ok(updatedProduct);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (ProductException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
