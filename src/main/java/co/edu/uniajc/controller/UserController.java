@@ -186,4 +186,24 @@ public class UserController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar usuario por ID", description = "Elimina un usuario segun su ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Usuario eliminado exitosamente",
+                    content = @Content
+            ),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

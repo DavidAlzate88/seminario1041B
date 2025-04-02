@@ -44,7 +44,7 @@ class UserServiceTest {
                 .name(TEST_NAME)
                 .email(TEST_EMAIL)
                 .build();
-        
+
         testRoles = new ArrayList<>();
         testRoles.add(Role.builder().id(1L).name("Test Role").build());
         testUser.setRoles(testRoles);
@@ -170,7 +170,7 @@ class UserServiceTest {
         assertThrows(UserException.class, () -> userService.findUsersByCreationDate(testCreationDate));
         verify(userRepository, times(1)).findByCreationDate(testCreationDate);
     }
- 
+
     @Test
     void updateUserRolesSuccess() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
@@ -201,5 +201,34 @@ class UserServiceTest {
         assertThrows(UserException.class, () -> userService.updateUserRoles(1L, testRoles));
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void deleteUserSuccess() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(userRepository).deleteById(1L);
+
+        assertDoesNotThrow(() -> userService.deleteUser(1L));
+        verify(userRepository, times(1)).existsById(1L);
+        verify(userRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteUserNotFound() {
+        when(userRepository.existsById(2L)).thenReturn(false);
+
+        assertThrows(UserException.class, () -> userService.deleteUser(2L));
+        verify(userRepository, times(1)).existsById(2L);
+        verify(userRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    void deleteUserException() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+        doThrow(new RuntimeException(DATABASE_ERROR)).when(userRepository).deleteById(1L);
+
+        assertThrows(UserException.class, () -> userService.deleteUser(1L));
+        verify(userRepository, times(1)).existsById(1L);
+        verify(userRepository, times(1)).deleteById(1L);
     }
 }
