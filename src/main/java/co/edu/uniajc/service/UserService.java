@@ -74,4 +74,15 @@ public class UserService {
             throw new UserException("Error Updating User Roles", e);
         }
     }
+
+    public void deleteUser(Long id) {
+        try {
+            if (!userRepository.existsById(id)) {
+                throw new UserException("User with id " + id + " not found");
+            }
+            userRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new UserException("Error deleting user with id " + id, e);
+        }
+    }
 }
