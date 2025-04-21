@@ -2,7 +2,6 @@
 *.env
 .idea
 .vscode
-build/
 .gradle/
 Dockerfile
 README.md
