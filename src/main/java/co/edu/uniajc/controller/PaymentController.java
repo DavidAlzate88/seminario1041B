@@ -78,7 +78,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "404", description = "Pago no encontrado", content = @Content),
             @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<Optional<Payment>> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Payment>> getOrderById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(paymentService.findById(id));
     }
 }
