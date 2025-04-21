@@ -1,7 +1,22 @@
 FROM gradle:8.12.1-jdk17-alpine AS builder
-COPY --chown=gradle:gradle . /app
+
 WORKDIR /app
-RUN chown -R gradle:gradle /home/gradle/.gradle
+
+# Copy only the wrapper script and make it executable
+COPY gradlew /app/gradlew
+RUN chmod +x /app/gradlew
+
+# Copy the gradle directory (libraries) - let Docker handle ownership
+COPY gradle /app/gradle
+
+# Copy the rest of the Gradle build files
+COPY build.gradle /app/build.gradle
+COPY settings.gradle /app/settings.gradle
+
+# Copy source code
+COPY src /app/src
+
+# Build
 RUN gradle build --no-daemon
 
 FROM amazoncorretto:17-alpine-jdk
