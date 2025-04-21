@@ -1,7 +1,20 @@
 FROM gradle:8.12.1-jdk17-alpine AS builder
-COPY --chown=gradle:gradle . /app
+
 WORKDIR /app
-RUN chown -R gradle:gradle /home/gradle/.gradle
+
+# Copy only Gradle files first to leverage caching
+COPY --chown=gradle:gradle gradle /app/gradle
+COPY --chown=gradle:gradle gradlew /app/gradlew
+COPY --chown=gradle:gradle build.gradle /app/build.gradle
+COPY --chown=gradle:gradle settings.gradle /app/settings.gradle
+
+# Download dependencies
+RUN gradle dependencies --no-daemon
+
+# Copy the source code
+COPY --chown=gradle:gradle src /app/src
+
+# Build the application
 RUN gradle build --no-daemon
 
 FROM amazoncorretto:17-alpine-jdk

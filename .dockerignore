@@ -2,7 +2,9 @@
 *.env
 .idea
 .vscode
-.gradle/
+#.gradle/
 Dockerfile
 README.md
 *.iml
+!.gradle/caches
+!.gradle/wrapper
