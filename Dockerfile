@@ -2,19 +2,21 @@ FROM gradle:8.12.1-jdk17-alpine AS builder
 
 WORKDIR /app
 
-# Copy only Gradle files first to leverage caching
-COPY --chown=gradle:gradle gradle /app/gradle
-COPY --chown=gradle:gradle gradlew /app/gradlew
-COPY --chown=gradle:gradle build.gradle /app/build.gradle
-COPY --chown=gradle:gradle settings.gradle /app/settings.gradle
+# Copy only the wrapper script and make it executable
+COPY gradlew /app/gradlew
+RUN chmod +x /app/gradlew
 
-# Download dependencies
-RUN gradle dependencies --no-daemon
+# Copy the gradle directory (libraries) - let Docker handle ownership
+COPY gradle /app/gradle
 
-# Copy the source code
-COPY --chown=gradle:gradle src /app/src
+# Copy the rest of the Gradle build files
+COPY build.gradle /app/build.gradle
+COPY settings.gradle /app/settings.gradle
 
-# Build the application
+# Copy source code
+COPY src /app/src
+
+# Build
 RUN gradle build --no-daemon
 
 FROM amazoncorretto:17-alpine-jdk
