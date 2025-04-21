@@ -17,7 +17,7 @@ COPY settings.gradle /app/settings.gradle
 COPY src /app/src
 
 # Build
-RUN gradle build --no-daemon
+RUN gradle clean build --no-daemon -x test
 
 FROM amazoncorretto:17-alpine-jdk
 WORKDIR /app
@@ -28,4 +28,5 @@ RUN addgroup -g 1000 appuser && \
     chown -R appuser:appuser /app /tmp
 
 USER appuser
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
