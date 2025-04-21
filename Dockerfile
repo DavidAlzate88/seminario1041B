@@ -1,14 +1,18 @@
-FROM amazoncorretto:17-alpine-jdk
-VOLUME /tmp
+FROM gradle:8.2.1-jdk17-alpine AS builder
+COPY --chown=gradle:gradle . /app
 WORKDIR /app
-COPY build/libs/seminario1041B-0.0.1-SNAPSHOT.jar app.jar
+RUN gradle build --no-daemon
 
-# Crear un nuevo grupo y usuario llamado 'appuser' con un UID específico (opcional pero recomendado)
+# Etapa 2: runtime
+FROM amazoncorretto:17-alpine-jdk
+WORKDIR /app
+COPY --from=builder /app/build/libs/*.jar app.jar
+RUN chmod 444 app.jar
+
+# Seguridad: usuario no root
 RUN addgroup -g 1000 appuser && \
     adduser -u 1000 -G appuser -s /bin/sh -D appuser && \
     chown -R appuser:appuser /app /tmp
 
-# Cambiar al usuario 'appuser' para ejecutar la aplicación
 USER appuser
-
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
