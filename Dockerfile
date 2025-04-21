@@ -6,7 +6,7 @@ RUN gradle build --no-daemon
 # Etapa 2: runtime
 FROM amazoncorretto:17-alpine-jdk
 WORKDIR /app
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/seminario1041B-0.0.1-SNAPSHOT.jar app.jar
 RUN chmod 444 app.jar
 
 # Seguridad: usuario no root
