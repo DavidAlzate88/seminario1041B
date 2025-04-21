@@ -87,7 +87,7 @@ public class OrderController {
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<Optional<Order>> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Order>> getOrderById(@PathVariable("id") Long id) {
         try {
             return ResponseEntity.ok(orderService.findById(id));
         } catch (RuntimeException e) {

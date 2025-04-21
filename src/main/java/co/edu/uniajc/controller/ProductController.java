@@ -87,7 +87,7 @@ public class ProductController {
                     }),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<Optional<Product>> getProductById(@PathVariable Long id) {
+    public ResponseEntity<Optional<Product>> getProductById(@PathVariable("id") Long id) {
         try {
             return ResponseEntity.ok(productService.findById(id));
         } catch (RuntimeException e) {
@@ -106,7 +106,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long id) {
         try {
             productService.deleteProduct(id);
             return ResponseEntity.noContent().build();
@@ -132,7 +132,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody Product productDetails) {
         try {
             Optional<Product> optionalProduct = productService.findById(id);
             if (optionalProduct.isPresent()) {

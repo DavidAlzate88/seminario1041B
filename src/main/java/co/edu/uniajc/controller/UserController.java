@@ -52,7 +52,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/getByEmail/{email}")
     @Operation(summary = "Obtener usuario por email", description = "Devuelve un usuario segun su email")
     @ApiResponses(value = {
             @ApiResponse(
@@ -67,7 +67,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
             @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
+    public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
         User user = userService.findByEmail(email);
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -76,7 +76,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/getByName/{name}")
     @Operation(summary = "Obtener usuario por nombre", description = "Devuelve un usuario segun su nombre")
     @ApiResponses(value = {
             @ApiResponse(
@@ -91,7 +91,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
             @ApiResponse(responseCode = "400", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<User> getUserByName(@RequestParam String name) {
+    public ResponseEntity<User> getUserByName(@PathVariable("name") String name) {
         User user = userService.findByName(name);
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -115,7 +115,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Clientes no encontrados", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<List<User>> getUsersByRoleName(@PathVariable String roleName) {
+    public ResponseEntity<List<User>> getUsersByRoleName(@PathVariable("roleName") String roleName) {
         try {
             List<User> users = userService.findUsersByRoleName(roleName);
             if (users.isEmpty()) {
@@ -142,7 +142,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuarios no encontrados", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<List<User>> getUsersByCreationDate(@PathVariable String creationDate) {
+    public ResponseEntity<List<User>> getUsersByCreationDate(@PathVariable("creationDate") String creationDate) {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date parsedDate = dateFormat.parse(creationDate);
@@ -175,7 +175,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<User> updateUserRoles(@PathVariable Long userId, @RequestBody List<Role> roles) {
+    public ResponseEntity<User> updateUserRoles(@PathVariable("userId") Long userId, @RequestBody List<Role> roles) {
         try {
             User updatedUser = userService.updateUserRoles(userId, roles);
             if (updatedUser == null) {
@@ -198,7 +198,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         try {
             userService.deleteUser(id);
             return ResponseEntity.noContent().build();
