@@ -1,3 +1,4 @@
+# Builder stage
 FROM gradle:8.12.1-jdk17-alpine AS builder
 
 WORKDIR /app
@@ -22,11 +23,12 @@ COPY env.properties /app/env.properties
 # Build
 RUN gradle build -x test
 
+# Final stage
 FROM amazoncorretto:17-alpine-jdk
 WORKDIR /app
 
-ARG JAR_FILE=build/libs/seminario1041B-0.0.1-SNAPSHOT.jar
 # Copia el archivo jar
+ARG JAR_FILE=build/libs/seminario1041B-0.0.1-SNAPSHOT.jar
 COPY --from=builder /app/${JAR_FILE} app.jar
 
 # Copia el archivo de configuración env.properties

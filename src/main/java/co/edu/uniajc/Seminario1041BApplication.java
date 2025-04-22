@@ -13,7 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 				version = "1.0.0",
 				description = "APIs Swagger Backend seminario1041B"),
 		servers = {
-				@Server(description = "ambiente local", url = "http://localhost:8080/")
+				@Server(description = "ambiente local", url = "http://localhost:8080/"),
+				@Server(description = "ambiente aws", url = "http://ec2-3-148-247-16.us-east-2.compute.amazonaws.com:8080/")
 		}
 )
 
