@@ -21,7 +21,7 @@ COPY src /app/src
 COPY env.properties /app/env.properties
 
 # Build
-RUN gradle build -x test
+RUN gradle clean build -x test
 
 # Final stage
 FROM amazoncorretto:17-alpine-jdk
