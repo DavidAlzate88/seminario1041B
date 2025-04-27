@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("${api.url}")
 @RequestMapping("/product")
 @Tag(name="Productos", description = "Operaciones relacionadas con productos")
 public class ProductController {

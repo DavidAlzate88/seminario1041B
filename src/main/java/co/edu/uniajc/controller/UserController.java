@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@CrossOrigin("${api.url}")
 @RequestMapping("/user")
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
 public class UserController {
@@ -158,7 +159,7 @@ public class UserController {
             return ResponseEntity.internalServerError().build();
         }
     }
-//Prueba Git Sonar
+
     @PutMapping("/{userId}/roles")
     @Operation(summary = "Actualizar roles de un usuario", description = "Actualiza los roles asociados a un usuario específico")
     @ApiResponses(value = {

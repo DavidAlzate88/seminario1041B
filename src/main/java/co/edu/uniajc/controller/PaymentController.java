@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("${api.url}")
 @RequestMapping("/payment")
 @Tag(name="Pagos", description = "Operaciones relacionadas con pagos")
 public class PaymentController {
